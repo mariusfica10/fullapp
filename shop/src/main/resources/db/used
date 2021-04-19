@@ -1,0 +1,98 @@
+CREATE TABLE IF NOT EXISTS supplier(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name varchar(100)
+);
+
+CREATE TABLE IF NOT EXISTS product_category(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name varchar(100),
+    description varchar(100)
+);
+
+CREATE TABLE IF NOT EXISTS product(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name varchar(100),
+    description varchar(100),
+    price double,
+    weight double,
+    category int,
+    supplier int,
+    imageurl varchar(100)
+);
+
+CREATE TABLE IF NOT EXISTS stock(
+    product int,
+    location int,
+    quantity int,
+    CONSTRAINT id_detail PRIMARY KEY(product, location)
+);
+
+CREATE TABLE IF NOT EXISTS order_detail(
+    order_ship int,
+    product int,
+    quantity int,
+    CONSTRAINT idD PRIMARY KEY(order_ship, product)
+);
+
+CREATE TABLE IF NOT EXISTS location(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name varchar(100),
+    adress_country varchar(100),
+    adress_city varchar(100),
+    adress_county varchar(100),
+    street_adress varchar(100)
+);
+
+CREATE TABLE IF NOT EXISTS customer(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name varchar(100),
+    last_name varchar(100),
+    username varchar(100),
+    password varchar(100),
+    email_adress varchar(100)
+);
+
+CREATE TABLE IF NOT EXISTS revenue(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    location int,
+    date datetime,
+    sum int
+);
+
+CREATE TABLE IF NOT EXISTS order_ship(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    shipped_from int,
+    customer int,
+    created_at datetime,
+    adress_country varchar(100),
+    adress_city varchar(100),
+    adress_county varchar(100),
+    street_adress varchar(100)
+);
+
+ALTER TABLE product
+    ADD FOREIGN KEY (category) REFERENCES product_category(id);
+
+ALTER TABLE product
+    ADD FOREIGN KEY (supplier) REFERENCES supplier(id);
+
+ALTER TABLE order_ship
+    ADD FOREIGN KEY (shipped_from) REFERENCES location(id);
+
+ALTER TABLE order_ship
+    ADD FOREIGN KEY (customer) REFERENCES customer(id);
+
+ALTER TABLE revenue
+    ADD FOREIGN KEY (location) REFERENCES location(id);
+
+ALTER TABLE order_detail
+    ADD FOREIGN KEY (order_ship) REFERENCES order_ship(id);
+
+ALTER TABLE order_detail
+    ADD FOREIGN KEY (product) REFERENCES product(id);
+
+ALTER TABLE stock
+    ADD FOREIGN KEY (product) REFERENCES product(id);
+
+ALTER TABLE stock
+    ADD FOREIGN KEY (location) REFERENCES location(id);
